@@ -1,27 +1,4 @@
-// var newdiv = $( "<div id='object1'></div>" )
-// $("#characterSelection").append(newdiv);
-
-
-// var imageChar = $('<div id="Img1"><h3>Yoda</h3><img src="./assets/images/Yoda.jpg" height=200 width=200 /></div>');
-// imageChar.addClass("imgChar");
-// imageChar.attr("height","200","width","200");
-// $("#object1").append(imageChar);
-
-// var imageChar2 = $('<div id="Img2"><h3>Darth-vader</h3><img src="./assets/images/Darth-vader.jpg" height=200 width=200 /></div>');
-// imageChar2.addClass("imgChar");
-// imageChar2.attr("height","200","width","200");
-// $("#object1").append(imageChar2);
-
-// var imageChar3 = $('<div id="Img3"><h3>Chewbacca</h3><img src="./assets/images/Chewbacca.jpg" height=200 width=200 /></div>');
-// imageChar3.addClass("imgChar");
-// imageChar3.attr("height","200","width","200");
-// $("#object1").append(imageChar3);
-
-// var imageChar4 = $('<div id="Img4"><h3>Wedge-Antilles</h3><img src="./assets/images/Wedge-Antilles.jpg" height=200 width=200 /></div>');
-// imageChar4.addClass("imgChar");
-// imageChar4.attr("height","200","width","200");
-// $("#object1").append(imageChar4);
-
+//Defining character objects
 var yodaChar ={
     name:"Yoda",
     objname: "yodaChar",
@@ -51,12 +28,17 @@ var wedgeChar ={
     attackPower:0
 };
 
-var listChars=[yodaChar,darthChar,chewbaccaChar,wedgeChar]
+//array of character objects
+var listChars=[yodaChar,darthChar,chewbaccaChar,wedgeChar] ;
+
+// variable definations
 var enemiesList=[];
 var defender;
 var yourCharObj;
 var attemptCount=0;
 
+
+// initialize function 
 function initializeGame(){
 
     $("#characterSelection").empty();
@@ -74,6 +56,7 @@ function initializeGame(){
      attemptCount=0;
 }
 
+// function to update the Status of the fight win or lost
 function updateStatus()
 {
     yourCharObj.healthPoints = yourCharObj.healthPoints - defender.attackPower ;
@@ -99,6 +82,8 @@ function updateStatus()
         $("#defender").empty();
    }
 }
+
+// function to add character object in specific division dynamically
 function addCharacter(characterObj,divId) 
 {
     var divObj=$("<div>")
@@ -111,32 +96,35 @@ function addCharacter(characterObj,divId)
     selectCharImg.attr("src",characterObj.url);
 
     
-//Header
+    //Header part of the character object
     var charHeader =$("<div>");
     charHeader.addClass("content top");
     var charname=$("<h3>");
     charname.text(characterObj.name);
     charHeader.append(charname);
-//Footer
+
+    //Footer part of the character object
     var charFooter =$("<div>");
     charFooter.addClass("content bottom");
     var charhealth=$("<h5>");
     charhealth.text(characterObj.healthPoints)
     charFooter.append(charhealth);
 
-//Adde to DIV
+    //Adde to DIV
     divObj.append(charHeader);
     divObj.append(selectCharImg);
     divObj.append(charFooter);
 
-//Add to Main Div
+    //Add to Main Div
       $("#"+ divId).append(divObj);
 }
 
 
+//Main Process
 $(document).ready(function() {
     initializeGame();
 
+    // on click event to identify your character and enemies
     $("#characterSelection").on("click",".charDiv",function(e){
         $('#characterSelection').empty();
         console.log($(this).attr("id"));
@@ -158,6 +146,7 @@ $(document).ready(function() {
 
     });
 
+    // on click event to select enemiey for the fight and move it to defender section
     $("#enemiesSelection").on("click",".charDiv",function(e){
     
         var charIdString = ($(this).attr("id"));
@@ -180,15 +169,24 @@ $(document).ready(function() {
         }
 
     });
+
+    //Attack button click event
     $("#attack").on("click",function(e){
+
+        //log your attackpower for debugging
         console.log("ur character attack power: " + yourCharObj.attackPower);
+
+        //use attemptcount to multiply with to increase the attackpower on every attempt
         attemptCount=attemptCount + 1;
         var urAttackpower = yourCharObj.attackPower * attemptCount
         defender.healthPoints = defender.healthPoints - urAttackpower;
+
         $("#defender").empty();
         addCharacter(defender,'defender');
         console.log("defender health points: " + defender.healthPoints);
         $("#attack").prop('disabled', true);
+
+        //use setTimeout function for counter attack within specified time and diable attack button till that time
         setTimeout(function() {
             $("#attack").prop('disabled', false);
             statusMsg.innerHTML ="You attacked " + defender.name + " for " +  urAttackpower + " damage. <br/>"  +
@@ -198,6 +196,7 @@ $(document).ready(function() {
     
     });
 
+    //Restart button to restart the game
     $("#restart").on("click",function(e){
         initializeGame();
     });
